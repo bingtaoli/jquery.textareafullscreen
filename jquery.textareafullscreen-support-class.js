@@ -6,25 +6,22 @@
         $wrapper,
         $editor,
         $index = -1,
+        $current = 0,
         $icon,
         $overlay,
-        transitionDuration = 300,
         settings = {
             overlay: true,
             maxWidth: '',
             maxHeight: ''
         };
     var methods = {
-
         init: function(opts) {
-
             settings = settings || {};
             $.extend(true, settings, settings);
             $.extend(true, settings, opts);
             $index++;
             $el = $(this);
             var id = $(this).attr('id');
-            console.log(id);
             var content =
                 '<div class="tx-editor-wrapper"><div class="tx-editor" id="tx-editor'+ id + '"><a href="#" index="'+ $index + '" class="tx-icon" id="tx-icon' + id + '"></a></div></div>';
             var $wrapper = $(content).insertAfter(this);
@@ -39,16 +36,15 @@
 				'resize': 'none'
             });
 
-            // ESC = closes the fullscreen mode
+            // ESC 关闭全屏
             $(window).on("keyup.txeditor", function(e) {
                 if (e.keyCode == 27) {
-                    isFullscreen ? methods.minimize() : '';
+                    isFullscreen ? methods.minimize($current) : '';
                 }
             });
 
             // fullscreen icon click event
             $icon.on('click.txeditor.icon', function(e) {
-                console.log(this);
                 var index = $(this).attr('index');
                 e.preventDefault();
                 methods[isFullscreen ? "minimize" : "expand"](index);
@@ -76,6 +72,7 @@
         },
 
         expand: function(i) {
+            $current = i;
             settings.maxWidth ? $editor.css('max-width', settings.maxWidth) :
                 '';
             settings.maxHeight ? $editor.css('max-height', settings.maxHeight) :
